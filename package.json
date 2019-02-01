@@ -1,0 +1,22 @@
+{
+  "name": "module-control",
+  "version": "1.0.0",
+  "description": "Change module positions (and more) for Magic Mirror",
+  "main": "module-control.js",
+  "scripts": {
+    "build": "webpack --mode production",
+    "watch": "webpack --mode development --watch"
+  },
+  "author": "Pascal Garber <pascal@artandcode.studio>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/express": "^4.16.1",
+    "@types/node": "^10.12.21",
+    "@types/request": "^2.48.1",
+    "@types/socket.io": "^2.1.2",
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.3.1",
+    "webpack": "^4.29.0",
+    "webpack-cli": "^3.2.1"
+  }
+}
