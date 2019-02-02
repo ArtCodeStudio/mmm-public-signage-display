@@ -1,10 +1,10 @@
-import { Log as MMLog, Module as MMModule } from '../../../module-types';
+import { Log as MMLog, Module as MMModule } from './module-types';
 
 export interface MagicMirrorHelper {
   getModules(): Array<typeof MMModule>
 }
 
-console.log('[module-control] Module', Module, Module.register);
+console.log('[module-control] Module');
 
 declare const Module: typeof MMModule;
 declare const Log: typeof MMLog;
