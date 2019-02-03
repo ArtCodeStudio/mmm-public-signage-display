@@ -1,10 +1,14 @@
 {
   "compilerOptions": {
     "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
     "target": "es6",
-    "noImplicitAny": true,
     "sourceMap": true,
-    "noUnusedLocals": true,
-    "typeRoots" : ["./typings"]
-  }
+    "outDir": "./dist",
+    "baseUrl": "./"
+  },
+  "exclude": ["node_modules"]
 }

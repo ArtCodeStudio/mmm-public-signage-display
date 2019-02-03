@@ -1,19 +1,17 @@
-import { Log as MMLog, Module as MMModule } from './module-types';
+import { IMMLog, IMMModule } from './interfaces';
 
 export interface MagicMirrorHelper {
-  getModules(): Array<typeof MMModule>
+  getModules(): IMMModule[];
 }
 
-console.log('[module-control] Module');
-
-declare const Module: typeof MMModule;
-declare const Log: typeof MMLog;
+declare const Module: IMMModule;
+declare const Log: IMMLog;
 declare const MM: MagicMirrorHelper;
 
-Module.register("module-control", {
+Module.register('module-control', {
   // Default module config.
   defaults: {
-    text: "Hello World!"
+    text: 'Hello World!',
   },
 
   /**
@@ -52,8 +50,8 @@ Module.register("module-control", {
    * In all cases the loader will only load a file once.
    * It even checks if the file is available in the default vendor folder.
    */
-  getScripts(): Array<string> {
-    return [this.file("js/module-control.js")];
+  getScripts(): string[] {
+    return [this.file('js/module-control.js')];
   },
 
   /**
@@ -63,8 +61,8 @@ Module.register("module-control", {
    * In all cases the loader will only load a file once.
    * It even checks if the file is available in the default vendor folder.
    */
-  getStyles(): Array<string> {
-    return [this.file("css/module-control.css")];
+  getStyles(): string[] {
+    return [this.file('css/module-control.css')];
   },
 
   /**
@@ -75,8 +73,8 @@ Module.register("module-control", {
   // getTranslations() {
   //   Log.log(`[${this.name}] getTranslations`);
   //   return {
-  //     en: "translations/en.json",
-  //     de: "translations/de.json"
+  //     en: 'translations/en.json',
+  //     de: 'translations/de.json'
   //   }
   // },
 
@@ -87,7 +85,7 @@ Module.register("module-control", {
    */
   // getDom(): HTMLElement {
   //   Log.log(`[${this.name}] getDom`);
-  //   const wrapper = document.createElement("div");
+  //   const wrapper = document.createElement('div');
   //   wrapper.innerHTML = 'Hello world!';
   //   return wrapper;
   // },
@@ -98,7 +96,7 @@ Module.register("module-control", {
    * the system calls the getHeader method to retrieve the module's header.
    * This method should therefor return a string. If this method is not subclassed,
    * this function will return the user's configured header.
-   * 
+   *
    * If you want to use the original user's configured header, reference `this.data.header`.
    */
   getHeader(): string {
