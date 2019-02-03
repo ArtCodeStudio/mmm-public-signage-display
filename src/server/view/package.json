@@ -1,0 +1,48 @@
+{
+  "name": "mmm-public-signage-display-server-view",
+  "version": "0.0.1",
+  "description": "",
+  "main": "scripts/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode production",
+    "build:dev": "webpack --mode development",
+    "watch": "npm run build -- --watch",
+    "watch:dev": "npm run build:dev -- --watch",
+    "link": "npm install && npm link @ribajs/core @ribajs/router @ribajs/bs4 && cd ../bs4 && npm run link && cd ../router && npm run link && cd ../core && npm run link"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.mediamor.de/jumplink.eu/shopify-app-developer-app"
+  },
+  "author": "Pascal Garber <pascal@jumplink.me>",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-proposal-class-properties": "^7.3.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.3.1",
+    "@babel/plugin-syntax-export-default-from": "^7.2.0",
+    "@babel/plugin-transform-runtime": "^7.2.0",
+    "@babel/preset-env": "^7.3.1",
+    "@babel/preset-typescript": "^7.1.0",
+    "babel-loader": "^8.0.5",
+    "babel-plugin-array-includes": "^2.0.3",
+    "html-loader": "^0.5.5",
+    "pug-loader": "^2.4.0",
+    "terser": "^3.14.1",
+    "terser-webpack-plugin": "^1.2.1",
+    "webpack": "^4.29.0",
+    "webpack-cli": "^3.2.1"
+  },
+  "dependencies": {
+    "@babel/runtime-corejs2": "^7.3.1",
+    "@nestjs/websockets": "^5.6.2",
+    "@ribajs/bs4": "^0.18.5",
+    "@ribajs/core": "^0.18.5",
+    "@ribajs/router": "^0.18.5",
+    "@types/jquery": "^3.3.29",
+    "@types/socket.io-client": "^1.4.32",
+    "bootstrap": "^4.2.1"
+  }
+}
