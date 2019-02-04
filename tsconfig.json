@@ -9,6 +9,10 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
+    "typeRoots": [
+      "node_modules/@types",
+      "types"
+    ]
   },
   "exclude": ["node_modules", "src/server/view/scripts"]
 }

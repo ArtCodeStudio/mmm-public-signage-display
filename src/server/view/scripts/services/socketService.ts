@@ -27,50 +27,25 @@ export class SocketService extends EventEmitter {
   }
 
   /**
-   * If you want to send a notification to all other modules, use the sendNotification(notification, payload).
-   * All other modules will receive the message via the notificationReceived method.
-   * In that case, the sender is automatically set to the instance calling the sendNotification method.
-   * @param notification Alias for socket.emit
-   * @param payload
-   */
-  // public sendNotification(notification: string, payload: any = {}) {
-  //   if (this.globalSocket) {
-  //     this.globalSocket.emit(notification, payload);
-  //   }
-  // }
-  // public sendNotification(notification: string, payload: any = {}) {
-  //   if (this.globalSocket) {
-  //     this.globalSocket.emit('notification', {
-  //       notification,
-  //       payload,
-  //       sender: this.globalSocket,
-  //     });
-  //   }
-  // }
-
-  /**
    * If you want to send a notification to the node_helper, use the sendSocketNotification(notification, payload).
    * Only the node_helper of this module will receive the socket notification.
    * @param notification The notification identifier.
    * @param payload Optional. A notification payload.
    */
   public sendSocketNotification(notification: string, payload: any = {}) {
+    this.debug('sendSocketNotification', notification, payload);
     if (this.moduleSocket) {
       this.moduleSocket.emit(notification, payload);
     }
   }
 
   protected getModuleSocket(moduleName: string) {
-    return io('/' + moduleName, {
-      transports: ['polling'],
-    });
+    return io('/' + moduleName);
   }
 
   protected async init() {
     this.debug('init');
-    // this.globalSocket = io('/', {
-    //   transports: ['polling'],
-    // });
+    // this.globalSocket = io('/');
     this.moduleSocket = this.getModuleSocket('mmm-public-signage-display');
 
     this.moduleSocket.on('connect', () => {
@@ -86,6 +61,14 @@ export class SocketService extends EventEmitter {
       this.debug('module disconnect', data);
     });
 
+    // https://stackoverflow.com/a/33960032/1465919
+    (this.moduleSocket as any).onevent = function(packet: any) {
+      const args = packet.data || [];
+      (this.moduleSocket as any).onevent.call(this, packet);    // original call
+      packet.data = ['*'].concat(args);
+      (this.moduleSocket as any).onevent.call(this, packet);      // additional call to catch-all
+    };
+
     // register catch all.
     this.moduleSocket.on('*', (notification: string, payload: any) => {
       if (notification !== '*') {
@@ -94,9 +77,17 @@ export class SocketService extends EventEmitter {
       }
     });
 
+    this.moduleSocket.on('SHOW_ALERT', (data: any) => {
+      this.debug('SHOW_ALERT', data);
+    });
+
+    this.moduleSocket.on('message', (data: any) => {
+      this.debug('message', data);
+    });
+
     // this.globalSocket.on('connect', () => {
     //   this.debug('global connect');
-    //   this.sendNotification('thank you global!');
+    //   // this.sendNotification('thank you global!');
     // });
 
     // this.globalSocket.on('exception', (data: any) => {
@@ -110,6 +101,13 @@ export class SocketService extends EventEmitter {
     // this.globalSocket.on('notification', (data: any) => {
     //   this.debug('global notification', data.notification, data.payload);
     //   this.emit(data.notification, data.payload, this.globalSocket);
+    // });
+
+    // this.globalSocket.on('*', (notification: string, payload: any) => {
+    //   if (notification !== '*') {
+    //     this.debug('module notification', notification, payload);
+    //     this.emit(notification, payload, this.globalSocket);
+    //   }
     // });
 
   }

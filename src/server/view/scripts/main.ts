@@ -19,8 +19,8 @@ import { bs4Module } from '@ribajs/bs4';
 import { SocketService } from './services/socketService';
 
 // Own
-// import * as CustomComponents from './components';
-// import { customBinders } from './binders';
+import * as CustomComponents from './components';
+// nimport { customBinders } from './binders';
 
 export class Main {
 
@@ -36,10 +36,10 @@ export class Main {
     this.debug('init the main application');
 
     // Regist custom components
-    // this.riba.module.regist({
-    //   components: CustomComponents,
-    //   binders: {...customBinders},
-    // });
+    this.riba.module.regist({
+      components: CustomComponents,
+      // binders: {...customBinders},
+    });
 
     // Regist modules
     this.riba.module.regist(coreModule);

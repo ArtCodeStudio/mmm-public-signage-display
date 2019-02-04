@@ -1,12 +1,13 @@
 // https://github.com/MichMich/MagicMirror/blob/master/js/main.js
-declare module "node_helper" {
+declare module 'node_helper' {
   import { Application } from 'express';
-  import { Client } from 'socket.io';
+  import { Server } from 'socket.io';
   interface INodeHelperProperties {
     name: string;
     path: string;
     expressApp: Application;
-    io: Client; // TODO type
+    io: Server; // TODO type
+    sendSocketNotification(this: INodeHelperProperties, notification: string, payload?: any): void;
   }
   export { INodeHelperProperties };
   export function create(config: {
@@ -15,15 +16,6 @@ declare module "node_helper" {
     start(this: INodeHelperProperties): void;
     stop(this: INodeHelperProperties): void;
     socketNotificationReceived(this: INodeHelperProperties, notification: string, payload?: any): void;
-    sendSocketNotification(this: INodeHelperProperties, notification: string, payload?: any): void;
     [key: string]: {};
   }): void;
-}
-
-import { Client } from 'socket.io';
-
-export interface INodeHelper {
-    name: string;
-    io: Client;
-    path: string;
 }

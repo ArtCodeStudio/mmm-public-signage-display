@@ -1,0 +1,6 @@
+p
+  | hello {message}
+.input-group.mb-3
+  input.form-control(type='text', placeholder="Recipient's username", aria-label="Recipient's username", aria-describedby='button-send', rv-value="message")
+  .input-group-append
+    button#button-send.btn.btn-outline-secondary(type='button' rv-on-click="send") Button

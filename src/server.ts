@@ -23,7 +23,7 @@ async function bootstrap(options: NestModuleOptions) {
 
 module.exports = NodeHelper.create({
   init() {
-    Log.log(`[module-control/node_helper] init`);
+    Log.log(`[mmm-public-signage-display/node_helper] init`);
   },
   start() {
     Log.log(`[${this.name}/node_helper] start`);
@@ -34,9 +34,26 @@ module.exports = NodeHelper.create({
   // sendSocketNotification(notification: string, payload) {
   //   Log.log(`[${this.name}/node_helper] sendSocketNotification: ${notification} ${inspect(payload)}`);
   // },
-  socketNotificationReceived(notification, payload) {
+  socketNotificationReceived(notification: string, payload: any) {
     Log.log(`[${this.name}/node_helper] socketNotificationReceived: ${notification} ${inspect(payload)}`);
-    this.sendSocketNotification(`got notification ${notification}`, payload);
+    if (payload.global) {
+      // Log.log(`[${this.name}/node_helper] sendSocketNotification ${inspect(this.io)}`);
+      this.sendSocketNotification(notification, payload);
+      this.io.of('/').emit(notification, payload);
+      // this.io.of('/mmm-public-signage-display').emit(notification, payload);
+      // this.io.of('/alert').emit(notification, payload);
+      // this.io.of('/').emit(notification, payload);
+      // this.io.of('/').clients((error: any, clients: string[]) => {
+      //   for (const client of clients) {
+      //     this.io.to(client).emit(notification, payload);
+      //   }
+      // });
+      // this.io.of('/mmm-public-signage-display').clients((error: any, clients: string[]) => {
+      //   for (const client of clients) {
+      //     this.io.to(client).emit(notification, payload);
+      //   }
+      // });
+    }
   },
   stop() {
     Log.log(`[${this.name}/node_helper] stop`);

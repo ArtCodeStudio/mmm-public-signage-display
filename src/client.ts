@@ -131,7 +131,8 @@ Module.register('mmm-public-signage-display', {
    * @param payload The payload of a notification.
    */
   socketNotificationReceived<T>(notification: string, payload: T): void {
-    Log.log(`[${this.name}] notificationReceived ${notification}`);
+    Log.log(`[${this.name}] socketNotificationReceived ${notification}`);
+    this.sendNotification(notification, payload);
   },
 
   /**

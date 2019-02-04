@@ -67,7 +67,7 @@
     "typeRoots": [
       "node_modules/@types",
       "node_modules/@ribajs/core/src/types",
-      "scripts/types"
+      "types"
     ]
   }
 }
