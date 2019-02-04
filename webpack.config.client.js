@@ -2,14 +2,14 @@
 var path = require('path');
 const clientConfig = {
   devtool: 'inline-source-map',
-  entry: './src/module-control.ts',
+  entry: './src/client.ts',
   output: {
     path: __dirname,
-    filename: 'module-control.js',
+    filename: 'mmm-public-signage-display.js',
   },
-  watchOptions: {
-    ignored: ['*.js', 'node_modules', 'dist']
-  },
+  // watchOptions: {
+  //   ignored: ['*.js', 'node_modules', 'dist', 'server', 'src/server']
+  // },
   module: {
     rules: [{
       test: /\.tsx?$/,
@@ -20,5 +20,11 @@ const clientConfig = {
     extensions: ['.ts', '.tsx', '.js']
   }
 };
+
+
+if(process.argv.indexOf('--watch') >= 0) {
+  clientConfig.watch = true;
+}
+
 
 module.exports = [clientConfig];

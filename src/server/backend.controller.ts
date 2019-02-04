@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Render } from '@nestjs/common';
 import { BackendService } from './backend.service';
 
 @Controller('backend')
@@ -6,7 +6,8 @@ export class BackendController {
   constructor(private readonly backendService: BackendService) {}
 
   @Get()
-  getHello(): string {
-    return this.backendService.getHello();
+  @Render('pages/dashboard.pug')
+  dashboard() {
+    return this.backendService.dashboard();
   }
 }

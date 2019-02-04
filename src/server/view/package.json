@@ -5,9 +5,11 @@
   "main": "scripts/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --mode production",
-    "build:dev": "webpack --mode development",
-    "watch": "npm run build -- --watch",
+    "build": "webpack --mode production && npm run build:style",
+    "build:style": "node-sass styles/app.scss ../../../server/public/styles/app.css",
+    "build:dev": "webpack --mode development && npm run build:style",
+    "watch": "npm run build -- --watch & npm run watch:style",
+    "watch:style": "npm run build:style -- --watch",
     "watch:dev": "npm run build:dev -- --watch",
     "link": "npm install && npm link @ribajs/core @ribajs/router @ribajs/bs4 && cd ../bs4 && npm run link && cd ../router && npm run link && cd ../core && npm run link"
   },

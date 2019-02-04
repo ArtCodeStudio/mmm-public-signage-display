@@ -20,17 +20,6 @@ import { bs4Module } from '@ribajs/bs4';
 // import * as CustomComponents from './components';
 // import { customBinders } from './binders';
 
-declare const shop: string;
-declare const apiKey: string;
-// redirect uri to use if not iframe
-declare const redirectUri: string;
-// auth uri to use in iframe
-declare const ENVIRONMENT: string;
-
-const handleize = (str: string) => {
-  return str.toLowerCase().trim().replace(/[^\w\s]/gi, '').replace(/ /g, '-');
-};
-
 export class Main {
 
   protected view?: View;
@@ -67,6 +56,4 @@ export class Main {
   }
 }
 
-const bootstrap = () => {
-  const app = new Main();
-};
+const app = new Main();

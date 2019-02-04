@@ -42,13 +42,13 @@ module.exports = {
     })],
   },
   entry: {
-    'app': './src/scripts/main.ts',
+    'app': './scripts/main.ts',
   },
   devtool: 'inline-source-map',
   output: {
     globalObject: 'self',
     filename: '[name].bundle.js',
-    path: path.resolve(__dirname, 'dist/scripts/'),
+    path: path.resolve(__dirname, '../../../server/public/scripts/'),
     publicPath: '/scripts/',
   },
   resolve: {

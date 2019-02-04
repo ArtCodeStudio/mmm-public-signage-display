@@ -10,5 +10,5 @@
     "outDir": "./dist",
     "baseUrl": "./",
   },
-  "exclude": ["node_modules", "src/server/view/src/scripts"]
+  "exclude": ["node_modules", "src/server/view/scripts"]
 }

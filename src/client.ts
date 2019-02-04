@@ -8,7 +8,7 @@ declare const Module: IMMModule;
 declare const Log: IMMLog;
 declare const MM: MagicMirrorHelper;
 
-Module.register('module-control', {
+Module.register('mmm-public-signage-display', {
   // Default module config.
   defaults: {
     text: 'Hello World!',

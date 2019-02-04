@@ -16,7 +16,7 @@ describe('BackendController', () => {
 
   describe('root', () => {
     it('should return "Hello World!"', () => {
-      expect(backendController.getHello()).toBe('Hello World!');
+      // expect(backendController.dashboard()).toBe('Hello World!');
     });
   });
 });
