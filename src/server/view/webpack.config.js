@@ -48,7 +48,7 @@ module.exports = {
   output: {
     globalObject: 'self',
     filename: '[name].bundle.js',
-    path: path.resolve(__dirname, '../../../server/public/scripts/'),
+    path: path.resolve(__dirname, '../../../public/server/scripts/'),
     publicPath: '/scripts/',
   },
   resolve: {

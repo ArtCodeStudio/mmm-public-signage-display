@@ -1,10 +1,10 @@
-import { IMMLog, IMMModule } from './interfaces';
+import { IMMLog, IModuleRegister, IClientModuleInstance } from './interfaces';
 
 export interface MagicMirrorHelper {
-  getModules(): IMMModule[];
+  getModules(): IClientModuleInstance[];
 }
 
-declare const Module: IMMModule;
+declare const Module: IModuleRegister;
 declare const Log: IMMLog;
 declare const MM: MagicMirrorHelper;
 
@@ -51,7 +51,7 @@ Module.register('mmm-public-signage-display', {
    * It even checks if the file is available in the default vendor folder.
    */
   getScripts(): string[] {
-    return [this.file('js/module-control.js')];
+    return [this.file('client/scripts/app.js')];
   },
 
   /**
@@ -62,7 +62,7 @@ Module.register('mmm-public-signage-display', {
    * It even checks if the file is available in the default vendor folder.
    */
   getStyles(): string[] {
-    return [this.file('css/module-control.css')];
+    return [this.file('client/styles/module-control.css')];
   },
 
   /**

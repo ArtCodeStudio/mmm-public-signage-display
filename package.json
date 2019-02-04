@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "concurrently --kill-others \"npm run build:server\" \"npm run build:client\"",
-    "build:server": "webpack --mode production --config webpack.config.server.js & npm run build:server:view",
+    "build:server": "webpack --mode production --config webpack.config.server.js",
     "build:server:view": "cd src/server/view && npm run build",
     "build:server:view:style": "cd src/server/view && npm run style",
     "build:client": "webpack --mode production --config webpack.config.client.js",

@@ -16,6 +16,8 @@ import { routerModule, IState } from '@ribajs/router';
 
 import { bs4Module } from '@ribajs/bs4';
 
+import { SocketService } from './services/socketService';
+
 // Own
 // import * as CustomComponents from './components';
 // import { customBinders } from './binders';
@@ -27,6 +29,7 @@ export class Main {
   protected riba = new Riba();
   protected model: any = {};
   protected dispatcher = new EventDispatcher();
+  protected socket = new SocketService();
 
   constructor() {
 
