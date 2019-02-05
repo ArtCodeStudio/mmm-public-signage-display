@@ -1,19 +1,16 @@
-import { IMMLog, IModuleRegister, IClientModuleInstance } from './interfaces';
+import { IMMLog, IModuleRegister, IClientModuleInstance, IMagicMirrorHelper } from './interfaces';
 import { Manager } from 'socket.io-client';
-
-export interface MagicMirrorHelper {
-  getModules(): IClientModuleInstance[];
-}
+import { SocketService } from './client/socket.service';
 
 declare const Module: IModuleRegister;
 declare const Log: IMMLog;
-declare const MM: MagicMirrorHelper;
+declare const MM: IMagicMirrorHelper;
 declare const io: typeof Manager;
 
 Module.register('mmm-public-signage-display', {
   // Default module config.
   defaults: {
-    text: 'Hello World!',
+
   },
 
   /**
@@ -43,46 +40,9 @@ Module.register('mmm-public-signage-display', {
    */
   start(): void {
     Log.log(`[${this.name}] started`, MM);
-    const socketGlobal = io('http://localhost:8080');
-    socketGlobal.on('connection', (socket) => {
-      Log.log(`[${this.name}] socketGlobal connection`);
-    });
-    // const onevent = (socketGlobal as any).onevent;
-    // (socketGlobal as any).onevent = (packet) => {
-    //     const args = packet.data || [];
-    //     onevent.call (this, packet);    // original call
-    //     packet.data = ['*'].concat(args);
-    //     onevent.call(this, packet);      // additional call to catch-all
-    // };
-    // socketGlobal.on('*', (event, data) => {
-    //   Log.log(`[${this.name}] notify`, event, data);
-    // });
-    socketGlobal.on('SHOW_ALERT', (data) => {
-      Log.log(`[${this.name}] global SHOW_ALERT`, data);
-    });
-    socketGlobal.on('notification', (event, data) => {
-      Log.log(`[${this.name}] global notification`, event, data);
-    });
-    const socketModule = io('/mmm-public-signage-display');
-    socketGlobal.on('connection', (socket) => {
-      Log.log(`[${this.name}] socketModule connection`);
-    });
-    // const oneventModule = (socketModule as any).onevent;
-    // (socketModule as any).onevent = (packet) => {
-    //     const args = packet.data || [];
-    //     oneventModule.call (this, packet);    // original call
-    //     packet.data = ['*'].concat(args);
-    //     oneventModule.call(this, packet);      // additional call to catch-all
-    // };
-    // socketModule.on('*', (event, data) => {
-    //   Log.log(`[${this.name}] notify`, event, data);
-    // });
-    socketGlobal.on('SHOW_ALERT', (data) => {
-      Log.log(`[${this.name}] module SHOW_ALERT`, data);
-    });
-    socketGlobal.on('notification', (event, data) => {
-      Log.log(`[${this.name}] module notification`, event, data);
-    });
+
+    const socketService = new SocketService(MM, Log, this);
+    socketService.initNotificationForwarding();
   },
 
   /**
@@ -148,13 +108,13 @@ Module.register('mmm-public-signage-display', {
 
   getTemplate(): string {
     Log.log(`[${this.name}] getTemplate`);
-    return '<div>Hello {{text | safe}}</div>';
+    return '';
   },
 
-  getTemplateData(): object {
-    Log.log(`[${this.name}] getTemplateData`);
-    return this.config;
-  },
+  // getTemplateData(): object {
+  //   Log.log(`[${this.name}] getTemplateData`);
+  //   return this.config;
+  // },
 
   /**
    * That MagicMirror core has the ability to send notifications to modules.

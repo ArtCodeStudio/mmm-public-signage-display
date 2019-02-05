@@ -6,11 +6,18 @@ import {
 
 import pugTemplate from './alert.component.pug';
 
-import { SocketService } from '../../services/socketService';
+import { SocketService } from '../../services/socket.service';
+import { IAlertParams } from '../../interfaces';
+
+type Type = 'notification' | 'alert' | 'marquee';
 
 interface IScope {
-  message: string;
   send: AlertComponent['send'];
+  hide: AlertComponent['hide'];
+  setType: AlertComponent['setType'];
+  message: string;
+  types: Type[];
+  type: Type;
 }
 
 export class AlertComponent extends RibaComponent {
@@ -29,23 +36,42 @@ export class AlertComponent extends RibaComponent {
   protected debug = Debug('component:' + AlertComponent.tagName);
 
   protected scope: IScope = {
-    message: '',
     send: this.send,
+    hide: this.hide,
+    setType: this.setType,
+    message: 'Aufgrund einer Störung kommt es derzeit im gesamten Regionalbahnverkehr zu hohen Verspätungen sowieo Zugausfällen.',
+    types: ['marquee', 'notification', 'alert'],
+    type: 'marquee',
   };
 
   constructor(element?: HTMLElement) {
     super(element);
     this.$el = JQuery(this.el);
     this.debug('constructor', this);
+    this.scope.type = this.scope.types[0],
     this.init(AlertComponent.observedAttributes);
   }
 
+  public setType(type: Type) {
+    this.scope.type = type;
+  }
+
   public send() {
-    this.socket.sendSocketNotification('SHOW_ALERT', {
+    const params: IAlertParams = {
+      type: this.scope.type,
       title: this.scope.message,
       message: this.scope.message,
-      global: true,
-    });
+    };
+    if (params.type === 'marquee') {
+      this.socket.sendSocketNotification('SHOW_MARQUEE', params);
+    } else {
+      this.socket.sendSocketNotification('SHOW_ALERT', params);
+    }
+  }
+
+  public hide() {
+    this.socket.sendSocketNotification('HIDE_ALERT', {});
+    this.socket.sendSocketNotification('HIDE_MARQUEE', {});
   }
 
   protected async init(observedAttributes: string[]) {
