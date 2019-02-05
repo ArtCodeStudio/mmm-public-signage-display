@@ -1,10 +1,11 @@
 /* tslint:disable:no-console */
-import { Injectable, Logger, LoggerService as ALoggerService } from '@nestjs/common';
 import * as Debug from 'debug';
 
-@Injectable()
-export class LoggerService extends Logger implements ALoggerService {
+export class LoggerService {
   public debug: Debug.IDebugger;
+  public log = console.log;
+  public warn = console.warn;
+  public error = console.error;
   public group = console.group;
   public groupCollapsed = console.groupCollapsed;
   public groupEnd = console.groupEnd;
@@ -12,7 +13,6 @@ export class LoggerService extends Logger implements ALoggerService {
   public timeEnd = console.timeEnd;
   public timeStamp = console.timeStamp;
   constructor(name: string = '') {
-    super(name);
     this.debug = Debug(`${name}`);
   }
 }

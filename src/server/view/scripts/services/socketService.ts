@@ -1,6 +1,7 @@
 import { Utils, Debug, IObserverSyncCallback } from '@ribajs/core';
-import io from 'socket.io-client';
 import { EventEmitter } from 'events';
+
+declare const io: any;
 
 export class SocketService extends EventEmitter {
 
@@ -13,7 +14,7 @@ export class SocketService extends EventEmitter {
   /**
    * https://github.com/MichMich/MagicMirror/blob/master/js/socket.js
    */
-  // protected globalSocket?: SocketIOClient.Socket;
+  protected globalSocket?: SocketIOClient.Socket;
   protected debug = Debug('services:SocketService');
 
   constructor() {
@@ -39,13 +40,13 @@ export class SocketService extends EventEmitter {
     }
   }
 
-  protected getModuleSocket(moduleName: string) {
+  protected getModuleSocket(moduleName: string): SocketIOClient.Socket {
     return io('/' + moduleName);
   }
 
   protected async init() {
     this.debug('init');
-    // this.globalSocket = io('/');
+    this.globalSocket = io('/') as SocketIOClient.Socket;
     this.moduleSocket = this.getModuleSocket('mmm-public-signage-display');
 
     this.moduleSocket.on('connect', () => {
@@ -62,11 +63,12 @@ export class SocketService extends EventEmitter {
     });
 
     // https://stackoverflow.com/a/33960032/1465919
+    const onevent = (this.moduleSocket as any).onevent;
     (this.moduleSocket as any).onevent = function(packet: any) {
       const args = packet.data || [];
-      (this.moduleSocket as any).onevent.call(this, packet);    // original call
+      onevent.call(this, packet);    // original call
       packet.data = ['*'].concat(args);
-      (this.moduleSocket as any).onevent.call(this, packet);      // additional call to catch-all
+      onevent.call(this, packet);      // additional call to catch-all
     };
 
     // register catch all.
@@ -77,38 +79,47 @@ export class SocketService extends EventEmitter {
       }
     });
 
-    this.moduleSocket.on('SHOW_ALERT', (data: any) => {
-      this.debug('SHOW_ALERT', data);
-    });
+    // this.moduleSocket.on('SHOW_ALERT', (data: any) => {
+    //   this.debug('SHOW_ALERT', data);
+    // });
 
     this.moduleSocket.on('message', (data: any) => {
       this.debug('message', data);
     });
 
-    // this.globalSocket.on('connect', () => {
-    //   this.debug('global connect');
-    //   // this.sendNotification('thank you global!');
-    // });
+    this.globalSocket.on('connect', () => {
+      this.debug('global connect');
+      // this.sendNotification('thank you global!');
+    });
 
-    // this.globalSocket.on('exception', (data: any) => {
-    //   console.error('global exception', data);
-    // });
+    this.globalSocket.on('exception', (data: any) => {
+      console.error('global exception', data);
+    });
 
-    // this.globalSocket.on('disconnect', (data: any) => {
-    //   this.debug('global disconnect', data);
-    // });
+    this.globalSocket.on('disconnect', (data: any) => {
+      this.debug('global disconnect', data);
+    });
 
-    // this.globalSocket.on('notification', (data: any) => {
-    //   this.debug('global notification', data.notification, data.payload);
-    //   this.emit(data.notification, data.payload, this.globalSocket);
-    // });
+    this.globalSocket.on('notification', (data: any) => {
+      this.debug('global notification', data.notification, data.payload);
+      this.emit(data.notification, data.payload, this.globalSocket);
+    });
 
-    // this.globalSocket.on('*', (notification: string, payload: any) => {
-    //   if (notification !== '*') {
-    //     this.debug('module notification', notification, payload);
-    //     this.emit(notification, payload, this.globalSocket);
-    //   }
-    // });
+    // https://stackoverflow.com/a/33960032/1465919
+    const oneventGlobal = (this.globalSocket as any).onevent;
+    (this.globalSocket as any).onevent = function(packet: any) {
+      const args = packet.data || [];
+      oneventGlobal.call(this, packet);    // original call
+      packet.data = ['*'].concat(args);
+      oneventGlobal.call(this, packet);      // additional call to catch-all
+    };
+
+    this.globalSocket.on('*', (notification: string, payload: any) => {
+      if (notification !== '*') {
+        this.debug('global notification', notification, payload);
+        this.emit(notification, payload, this.globalSocket);
+      }
+    });
 
   }
 

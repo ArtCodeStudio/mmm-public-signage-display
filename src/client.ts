@@ -1,4 +1,5 @@
 import { IMMLog, IModuleRegister, IClientModuleInstance } from './interfaces';
+import { Manager } from 'socket.io-client';
 
 export interface MagicMirrorHelper {
   getModules(): IClientModuleInstance[];
@@ -7,6 +8,7 @@ export interface MagicMirrorHelper {
 declare const Module: IModuleRegister;
 declare const Log: IMMLog;
 declare const MM: MagicMirrorHelper;
+declare const io: typeof Manager;
 
 Module.register('mmm-public-signage-display', {
   // Default module config.
@@ -18,9 +20,9 @@ Module.register('mmm-public-signage-display', {
    * This method is called when a module gets instantiated.
    * In most cases you do not need to subclass this method.
    */
-  init(): void {
-    Log.log(`[${this.name}] init`);
-  },
+  // init(): void {
+  //   Log.log(`[${this.name}] init`);
+  // },
 
   /**
    * This method is called when a module is loaded.
@@ -29,10 +31,10 @@ Module.register('mmm-public-signage-display', {
    * In most cases you do not need to subclass this method.
    * @param callback
    */
-  loaded(callback: () => void): void {
-    Log.log(`[${this.name}] loaded`);
-    callback();
-  },
+  // loaded(callback: () => void): void {
+  //   Log.log(`[${this.name}] loaded`);
+  //   callback();
+  // },
 
   /**
    * This method is called when all modules are loaded an the system is ready to boot up.
@@ -41,6 +43,46 @@ Module.register('mmm-public-signage-display', {
    */
   start(): void {
     Log.log(`[${this.name}] started`, MM);
+    const socketGlobal = io('http://localhost:8080');
+    socketGlobal.on('connection', (socket) => {
+      Log.log(`[${this.name}] socketGlobal connection`);
+    });
+    // const onevent = (socketGlobal as any).onevent;
+    // (socketGlobal as any).onevent = (packet) => {
+    //     const args = packet.data || [];
+    //     onevent.call (this, packet);    // original call
+    //     packet.data = ['*'].concat(args);
+    //     onevent.call(this, packet);      // additional call to catch-all
+    // };
+    // socketGlobal.on('*', (event, data) => {
+    //   Log.log(`[${this.name}] notify`, event, data);
+    // });
+    socketGlobal.on('SHOW_ALERT', (data) => {
+      Log.log(`[${this.name}] global SHOW_ALERT`, data);
+    });
+    socketGlobal.on('notification', (event, data) => {
+      Log.log(`[${this.name}] global notification`, event, data);
+    });
+    const socketModule = io('/mmm-public-signage-display');
+    socketGlobal.on('connection', (socket) => {
+      Log.log(`[${this.name}] socketModule connection`);
+    });
+    // const oneventModule = (socketModule as any).onevent;
+    // (socketModule as any).onevent = (packet) => {
+    //     const args = packet.data || [];
+    //     oneventModule.call (this, packet);    // original call
+    //     packet.data = ['*'].concat(args);
+    //     oneventModule.call(this, packet);      // additional call to catch-all
+    // };
+    // socketModule.on('*', (event, data) => {
+    //   Log.log(`[${this.name}] notify`, event, data);
+    // });
+    socketGlobal.on('SHOW_ALERT', (data) => {
+      Log.log(`[${this.name}] module SHOW_ALERT`, data);
+    });
+    socketGlobal.on('notification', (event, data) => {
+      Log.log(`[${this.name}] module notification`, event, data);
+    });
   },
 
   /**
@@ -50,9 +92,9 @@ Module.register('mmm-public-signage-display', {
    * In all cases the loader will only load a file once.
    * It even checks if the file is available in the default vendor folder.
    */
-  getScripts(): string[] {
-    return [this.file('client/scripts/app.js')];
-  },
+  // getScripts(): string[] {
+  //   return [this.file('client/scripts/app.js')];
+  // },
 
   /**
    * The getStyles method is called to request any additional stylesheets that need to be loaded.
@@ -61,9 +103,9 @@ Module.register('mmm-public-signage-display', {
    * In all cases the loader will only load a file once.
    * It even checks if the file is available in the default vendor folder.
    */
-  getStyles(): string[] {
-    return [this.file('client/styles/module-control.css')];
-  },
+  // getStyles(): string[] {
+  //   return [this.file('client/styles/module-control.css')];
+  // },
 
   /**
    * The getTranslations method is called to request translation files that need to be loaded.
@@ -99,10 +141,10 @@ Module.register('mmm-public-signage-display', {
    *
    * If you want to use the original user's configured header, reference `this.data.header`.
    */
-  getHeader(): string {
-    Log.log(`[${this.name}] getHeader`);
-    return this.data.header;
-  },
+  // getHeader(): string {
+  //   Log.log(`[${this.name}] getHeader`);
+  //   return this.data.header;
+  // },
 
   getTemplate(): string {
     Log.log(`[${this.name}] getTemplate`);
@@ -121,33 +163,33 @@ Module.register('mmm-public-signage-display', {
    * @param payload The payload of a notification.
    * @param sender he sender of the notification. If this argument is `undefined`, the sender of the notififiction is the core system.
    */
-  notificationReceived<T>(notification: string, payload: T, sender?: any): void {
-    Log.log(`[${this.name}] notificationReceived ${notification}`);
-  },
+  // notificationReceived(notification: string, payload: any, sender?: any): void {
+  //   Log.log(`[${this.name}] notificationReceived ${notification} from sender ${sender}`);
+  // },
 
   /**
    * When using a node_helper, the node helper can send your module notifications.
    * @param notification The notification identifier.
    * @param payload The payload of a notification.
    */
-  socketNotificationReceived<T>(notification: string, payload: T): void {
-    Log.log(`[${this.name}] socketNotificationReceived ${notification}`);
-    this.sendNotification(notification, payload);
-  },
+  // socketNotificationReceived(notification: string, payload: any) {
+  //   Log.log(`[${this.name}] socketNotificationReceived ${notification}`);
+  //   this.sendNotification(notification, payload);
+  // },
 
   /**
    * When a module is hidden (using the module.hide() method), the suspend() method will be called.
    * By subclassing this method you can perform tasks like halting the update timers.
    */
-  suspend(): void {
-    Log.log(`[${this.name}] suspend`);
-  },
+  // suspend(): void {
+  //   Log.log(`[${this.name}] suspend`);
+  // },
 
   /**
    * When a module is requested to be shown (using the module.show() method), the resume() method will be called.
    * By subclassing this method you can perform tasks restarting the update timers.
    */
-  resume(): void {
-    Log.log(`[${this.name}] resume`);
-  },
+  // resume(): void {
+  //   Log.log(`[${this.name}] resume`);
+  // },
 });

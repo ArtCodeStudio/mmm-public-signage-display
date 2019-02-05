@@ -1,25 +1,31 @@
-import { NestModuleOptions } from './interfaces';
+import { INodeHelperProperties } from './interfaces';
 import NodeHelper = require('node_helper');
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './server/app.module';
-import { Application, static as ExpressStatic } from 'express';
 import { LoggerService } from './server/logger.service';
 import { resolve } from 'path';
 import { inspect } from 'util';
+import { controller } from './server/controller';
 
 const Log = new LoggerService('node_helper');
-
-async function bootstrap(options: NestModuleOptions) {
-  const app = await NestFactory.create(
-    AppModule.forRoot(options),
-    options.nodeHelper.expressApp,
-  );
+const bootstrap = (nodeHelper: INodeHelperProperties) => {
   const viewsDir = resolve('./modules/mmm-public-signage-display/src/server/view/templates');
-  app.setViewEngine('pug');
-  app.setBaseViewsDir(viewsDir);
-  await app.init(); // not working without ???
-  return app;
-}
+  nodeHelper.expressApp.set('view engine', 'pug');
+  nodeHelper.expressApp.set('views', viewsDir);
+  // nodeHelper.io.of('/')
+  // .on('connection', (socket: SocketIO.Socket) => {
+  //   Log.log('connection');
+  //   // socket.join('global');
+  //   // socket.nsp.emit('hello');
+  // });
+  // nodeHelper.io.of('/mmm-public-signage-display')
+  // .on('connection', (socket: SocketIO.Socket) => {
+  //   Log.log('connection');
+  //   // socket.join('global');
+  //   // socket.nsp.emit('hello');
+  // });
+  controller(nodeHelper.expressApp);
+  // await app.init(); // not working without ???
+  return nodeHelper;
+};
 
 module.exports = NodeHelper.create({
   init() {
@@ -27,32 +33,52 @@ module.exports = NodeHelper.create({
   },
   start() {
     Log.log(`[${this.name}/node_helper] start`);
-    return bootstrap({
-      nodeHelper: this,
-    });
+    bootstrap(this);
+
+    // setInterval(() => {
+    //   this.io.sockets.emit('TEST_LOOP', {});
+    // }, 1000);
   },
-  // sendSocketNotification(notification: string, payload) {
-  //   Log.log(`[${this.name}/node_helper] sendSocketNotification: ${notification} ${inspect(payload)}`);
-  // },
   socketNotificationReceived(notification: string, payload: any) {
     Log.log(`[${this.name}/node_helper] socketNotificationReceived: ${notification} ${inspect(payload)}`);
     if (payload.global) {
-      // Log.log(`[${this.name}/node_helper] sendSocketNotification ${inspect(this.io)}`);
-      this.sendSocketNotification(notification, payload);
-      this.io.of('/').emit(notification, payload);
+      // this.sendSocketNotification(notification, payload);
+      Log.log(`[${this.name}/node_helper] sendSocketNotification ${inspect(this.io.sockets)}`);
+      // this.sendSocketNotification(notification, payload);
+      this.io.sockets.emit(notification, payload);
+      // this.io.sockets.emit('*', notification, payload);
+      // this.io.sockets.emit('notification', {
+      //   notification,
+      //   sender: null,
+      //   payload,
+      // });
+      // this.io.of('http://localhost:8080').emit('notification', {
+      //   notification,
+      //   sender: null,
+      //   payload,
+      // });
+      // this.io.of('/').emit('notification', {
+      //   notification,
+      //   sender: null,
+      //   payload,
+      // });
+      // this.io.of('/mmm-public-signage-display')
+      // .emit('notification', {
+      //   notification,
+      //   sender: null,
+      //   payload,
+      // });
+      // this.io.of('/alert').emit('notification', {
+      //   notification,
+      //   sender: null,
+      //   payload,
+      // });
+      // this.io.of('http://localhost:8080').emit(notification, payload);
       // this.io.of('/mmm-public-signage-display').emit(notification, payload);
+      // this.io.of('/').to('global').emit(notification, payload);
+      // this.io.of('/mmm-public-signage-display').to('global').emit(notification, payload);
+      // this.io.of('http://localhost:8080/alert').emit(notification, payload);
       // this.io.of('/alert').emit(notification, payload);
-      // this.io.of('/').emit(notification, payload);
-      // this.io.of('/').clients((error: any, clients: string[]) => {
-      //   for (const client of clients) {
-      //     this.io.to(client).emit(notification, payload);
-      //   }
-      // });
-      // this.io.of('/mmm-public-signage-display').clients((error: any, clients: string[]) => {
-      //   for (const client of clients) {
-      //     this.io.to(client).emit(notification, payload);
-      //   }
-      // });
     }
   },
   stop() {
