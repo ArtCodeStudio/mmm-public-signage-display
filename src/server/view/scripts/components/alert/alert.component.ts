@@ -63,15 +63,15 @@ export class AlertComponent extends RibaComponent {
       message: this.scope.message,
     };
     if (params.type === 'marquee') {
-      this.socket.sendSocketNotification('SHOW_MARQUEE', params);
+      this.socket.sendGlobalNotification('SHOW_MARQUEE', params);
     } else {
-      this.socket.sendSocketNotification('SHOW_ALERT', params);
+      this.socket.sendGlobalNotification('SHOW_ALERT', params);
     }
   }
 
   public hide() {
-    this.socket.sendSocketNotification('HIDE_ALERT', {});
-    this.socket.sendSocketNotification('HIDE_MARQUEE', {});
+    this.socket.sendGlobalNotification('HIDE_ALERT', {});
+    this.socket.sendGlobalNotification('HIDE_MARQUEE', {});
   }
 
   protected async init(observedAttributes: string[]) {

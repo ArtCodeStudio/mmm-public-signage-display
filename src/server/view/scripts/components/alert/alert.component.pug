@@ -1,8 +1,6 @@
-p
-  | hello {message}
 .input-group.mb-3
-  input.form-control(type='text', placeholder="Recipient's username", aria-label="Recipient's username", aria-describedby='button-send', rv-value="message")
-  .input-group-append.dropdown
+  input.form-control(type='text', placeholder="Write a message", aria-label="Write a message", aria-describedby='button-send', rv-value="message")
+  .input-group-append.btn-group.dropdown
     button.btn.btn-outline-secondary.dropdown-toggle(rv-bs4-dropdown="")
       span(rv-text="type")
     .dropdown-menu.scrollbar-y-auto.scrollbar-primary

@@ -1,0 +1,42 @@
+.row
+  //- https://bootsnipp.com/snippets/7B7W
+  ul.timeline.col-12
+    li(rv-each-time="timeline" rv-class-timeline-inverted="%time% | uneven")
+        .timeline-badge.primary
+          a
+            i.glyphicon.glyphicon-record {%time%}
+        .timeline-panel(rv-if="time.type | eq 'modules'")
+          .timeline-heading
+            //- img.img-fluid(src='http://lorempixel.com/1600/500/sports/2')
+          .timeline-body
+            p(rv-each-module="time.modules") {modules.module} - {modules.position}
+          .timeline-footer.d-flex.justify-content-between
+            a.pull-right
+              .dropdown
+                button.btn.btn-outline-secondary.dropdown-toggle(rv-bs4-dropdown="")
+                  span(rv-text="time._module")
+                .dropdown-menu.scrollbar-y-auto.scrollbar-primary
+                  .dropdown-item(rv-each-module="config.modules")
+                    .text-primary.cursor-pointer(rv-on-click="selectModuleForTimeline | args %time% module")
+                      span(rv-text="module.module")
+                      span(rv-if="module.header")
+                        br
+                        small(rv-text="module.header")
+        .timeline-panel(rv-if="time.type | eq 'media'")
+          .timeline-heading
+            img.img-fluid(src='http://lorempixel.com/1600/500/sports/2')
+          .timeline-body
+            p(rv-each-mod="time.modules")
+              span(rv-text="mod.module")
+              span(rv-text="mod.position")
+          .timeline-footer.d-flex.justify-content-between
+  .col-12
+    .btn-group.dropdown
+      button.btn.btn-outline-secondary.dropdown-toggle(rv-bs4-dropdown="")
+        span(rv-text="_timeType")
+      .dropdown-menu.scrollbar-y-auto.scrollbar-primary
+        .dropdown-item(rv-each-type="timeTypes")
+          .text-primary.cursor-pointer(rv-on-click="selectTimetype | args type")
+            span(rv-text="type")
+      button#button-add.btn.btn-outline-secondary(type='button' rv-on-click="addItemToTimeline") Add
+    button#button-save.btn.btn-outline-secondary(type='button' rv-on-click="save") Save

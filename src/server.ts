@@ -18,7 +18,10 @@ module.exports = NodeHelper.create({
   },
   socketNotificationReceived(notification: string, payload: any) {
     Log.log(`[${this.name}/node_helper] socketNotificationReceived: ${notification} ${inspect(payload)}`);
-    socketService.forwardNotification(notification, payload);
+    Log.log(`[${this.name}/node_helper] socketNotificationReceived: ${notification} ${inspect(payload)}`);
+    if (notification.indexOf('*:') === 0) {
+      socketService.forwardNotification(notification.substring(2), payload);
+    }
   },
   stop() {
     Log.log(`[${this.name}/node_helper] stop`);
