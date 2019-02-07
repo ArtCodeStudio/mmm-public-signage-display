@@ -1,7 +1,9 @@
+import { IMagicMirrorModuleConfig } from '../interfaces';
 export type TimelineType = 'modules' | 'media';
 
 export interface ISignageTimelineModule {
-  module: string;
+  module: IMagicMirrorModuleConfig;
+  name: string;
   position: string;
 }
 
@@ -10,6 +12,6 @@ export interface ISignageTimeline {
   /**
    * Current module dropdown value
    */
-  _module?: string;
+  _module: IMagicMirrorModuleConfig;
   modules: ISignageTimelineModule[];
 }

@@ -1,27 +1,32 @@
 .row
   //- https://bootsnipp.com/snippets/7B7W
   ul.timeline.col-12
-    li(rv-each-time="timeline" rv-class-timeline-inverted="%time% | uneven")
+    li(rv-each-time="timeline" rv-id="%time%" rv-class-timeline-inverted="%time% | uneven")
         .timeline-badge.primary
           a
             i.glyphicon.glyphicon-record {%time%}
         .timeline-panel(rv-if="time.type | eq 'modules'")
-          .timeline-heading
-            //- img.img-fluid(src='http://lorempixel.com/1600/500/sports/2')
+          .timeline-heading.px-3.py-2
+            strong Modules
           .timeline-body
-            p(rv-each-module="time.modules") {modules.module} - {modules.position}
+            table.table
+              tr(rv-each-modu="time.modules")
+                th(scope='row', rv-text="modu.name")
+                td(rv-text="modu.position")
           .timeline-footer.d-flex.justify-content-between
-            a.pull-right
+            .btn-group
               .dropdown
-                button.btn.btn-outline-secondary.dropdown-toggle(rv-bs4-dropdown="")
-                  span(rv-text="time._module")
+                button.btn.btn-outline-secondary.dropdown-toggle.modules-dropdown(rv-bs4-dropdown="")
+                  span(rv-text="time._module.module")
+                  br
+                  small(rv-text="time._module.header")
                 .dropdown-menu.scrollbar-y-auto.scrollbar-primary
-                  .dropdown-item(rv-each-module="config.modules")
-                    .text-primary.cursor-pointer(rv-on-click="selectModuleForTimeline | args %time% module")
-                      span(rv-text="module.module")
-                      span(rv-if="module.header")
-                        br
-                        small(rv-text="module.header")
+                  .dropdown-item.text-primary.cursor-pointer(rv-each-mo="config.modules", rv-on-click="selectModulesDropdown | args time mo")
+                    span(rv-text="mo.module")
+                    span(rv-if="mo.header")
+                      br
+                      small(rv-text="mo.header")
+              button.button-add-module.btn.btn-outline-secondary(type='button' rv-data-index="%time%" /*rv-on-click="addModuleToTimeline | args time time._module"*/) Add
         .timeline-panel(rv-if="time.type | eq 'media'")
           .timeline-heading
             img.img-fluid(src='http://lorempixel.com/1600/500/sports/2')
@@ -30,13 +35,14 @@
               span(rv-text="mod.module")
               span(rv-text="mod.position")
           .timeline-footer.d-flex.justify-content-between
-  .col-12
-    .btn-group.dropdown
-      button.btn.btn-outline-secondary.dropdown-toggle(rv-bs4-dropdown="")
+nav.navbar.fixed-bottom.navbar-dark.bg-primary
+  .col-12.d-flex.justify-content-between
+    .btn-group.dropup
+      button.btn.btn-dark.dropdown-toggle(rv-bs4-dropdown="")
         span(rv-text="_timeType")
       .dropdown-menu.scrollbar-y-auto.scrollbar-primary
         .dropdown-item(rv-each-type="timeTypes")
           .text-primary.cursor-pointer(rv-on-click="selectTimetype | args type")
             span(rv-text="type")
-      button#button-add.btn.btn-outline-secondary(type='button' rv-on-click="addItemToTimeline") Add
-    button#button-save.btn.btn-outline-secondary(type='button' rv-on-click="save") Save
+      button#button-add.btn.btn-dark(type='button' rv-on-click="addItemToTimeline") Add
+    button#button-save.btn.btn-dark(type='button' rv-on-click="save") Save
