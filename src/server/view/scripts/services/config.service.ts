@@ -5,9 +5,18 @@ export class ConfigService {
 
   public static instance?: ConfigService;
 
-  public static get(): Promise<IMagicMirrorConfig> {
-    return Utils.getJSON('/config');
+  public static async get(): Promise<IMagicMirrorConfig> {
+    if (this.config) {
+      return this.config;
+    }
+    return Utils.getJSON('/config')
+    .then((config) => {
+      this.config = config;
+      return config;
+    });
   }
+
+  protected static config?: IMagicMirrorConfig;
 
   protected debug = Debug('services:ConfigService');
 

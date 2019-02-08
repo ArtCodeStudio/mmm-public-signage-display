@@ -5,6 +5,7 @@ export interface ISignageTimelineModule {
   module: IMagicMirrorModuleConfig;
   name: string;
   position: string;
+  visible: boolean;
 }
 
 export interface ISignageTimeline {
@@ -14,4 +15,5 @@ export interface ISignageTimeline {
    */
   _module: IMagicMirrorModuleConfig;
   modules: ISignageTimelineModule[];
+  hideOthers: boolean;
 }

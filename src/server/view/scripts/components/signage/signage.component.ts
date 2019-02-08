@@ -16,6 +16,7 @@ import { IMagicMirrorConfig, ISignageTimeline, ISignageTimelineModule, TimelineT
 export interface IScope {
   config?: IMagicMirrorConfig;
   save: SignageComponent['save'];
+  showTimeline: SignageComponent['showTimeline'];
   addItemToTimeline: SignageComponent['addItemToTimeline'];
   // toggleModulesDropdown: SignageComponent['toggleModulesDropdown'];
   selectModulesDropdown: SignageComponent['selectModulesDropdown'];
@@ -48,6 +49,7 @@ export class SignageComponent extends RibaComponent {
   protected scope: IScope = {
     config: undefined,
     save: this.save,
+    showTimeline: this.showTimeline,
     addItemToTimeline: this.addItemToTimeline,
     // toggleModulesDropdown: this.toggleModulesDropdown,
     selectModulesDropdown: this.selectModulesDropdown,
@@ -87,10 +89,11 @@ export class SignageComponent extends RibaComponent {
     event.preventDefault();
     event.stopPropagation();
     this.debug('addModuleToTimeline', module);
-    const newModule = {
+    const newModule: ISignageTimelineModule = {
       module,
-      name: module.module,
+      name: module.header || module.module,
       position: 'fullscreen_above',
+      visible: true,
     };
     time.modules.push(newModule);
   }
@@ -101,6 +104,23 @@ export class SignageComponent extends RibaComponent {
 
   public save() {
     this.socketService.sendGlobalNotification('SHOW_MARQUEE', {});
+  }
+
+  public showTimeline(time: ISignageTimeline) {
+    this.debug('showTimeline');
+    switch (time.type) {
+      case 'media':
+        this.socketService.sendGlobalNotification('SHOW_MEDIA', {
+
+        });
+        break;
+      case 'modules':
+        this.socketService.sendGlobalNotification('SHOW_MODULES', {
+          modules: time.modules,
+        });
+        break;
+    }
+
   }
 
   protected async init(observedAttributes: string[]) {
@@ -118,11 +138,12 @@ export class SignageComponent extends RibaComponent {
     this.scope.timeline.push({
       type: this.scope._timeType,
       _module: this.scope.config.modules[0],
-      modules: [{
+      hideOthers: true,
+      modules: [/*{
         module: this.scope.config.modules[0],
-        name: this.scope.config.modules[0].module,
+        name: this.scope.config.modules[0].header || this.scope.config.modules[0].module,
         position: 'fullscreen_above',
-      }],
+      }*/],
     });
 
     this.initModulesDropdown();
@@ -149,7 +170,7 @@ export class SignageComponent extends RibaComponent {
     for (const buttonAddModule of buttonsAddModule) {
       buttonAddModule.onclick = (event: MouseEvent) => {
         const time = this.scope.timeline[Number(buttonAddModule.dataset.index)];
-        this.addModuleToTimeline(time, time._module as IMagicMirrorModuleConfig, null, event);
+        this.addModuleToTimeline(time, time._module, null, event);
       };
     }
   }

@@ -20,7 +20,52 @@ export interface IHideOptions {
   lockString?: string;
 }
 
-export interface IClientModuleInstance {
+export interface IClientModuleInstanceProperties {
+  /**
+   * The name of the module.
+   */
+  name: string;
+  /**
+   * This is a unique identifier for the module instance.
+   */
+  identifier: string;
+  /**
+   * This represents if the module is currently hidden (faded away).
+   */
+  hidden: boolean;
+  /**
+   * The configuration of the module instance as set in the user's `config.js` file.
+   * This config will also contain the module's defaults if these properties are not over-written by the user config.
+   */
+  config: any;
+  /**
+   * The data object contain additional metadata about the module instance.
+   */
+  data: {
+    /**
+     * The classes which are added to the module dom wrapper.
+     */
+    classes: string;
+    /**
+     * The filename of the core module file.
+     */
+    file: string;
+    /**
+     * The path of the module folder.
+     */
+    path: string;
+    /**
+     * The header added to the module.
+     */
+    header: string;
+    /**
+     * The position in which the instance will be shown.
+     */
+    position: string;
+  };
+}
+
+export interface IClientModuleInstance extends IClientModuleInstanceProperties {
   /**
    * If you want to create a path to a file in your module folder, use the file() method.
    * It returns the path to the filename given as the attribute.
@@ -94,64 +139,21 @@ export interface IClientModuleInstance {
    * @param identifier Identifier of the string that should be translated.
    */
   translate(identifier: string): void;
-
-  /**
-   * The name of the module.
-   */
-  name: string;
-  /**
-   * This is a unique identifier for the module instance.
-   */
-  identifier: string;
-  /**
-   * This represents if the module is currently hidden (faded away).
-   */
-  hidden: boolean;
-  /**
-   * The configuration of the module instance as set in the user's `config.js` file.
-   * This config will also contain the module's defaults if these properties are not over-written by the user config.
-   */
-  config: any;
-  /**
-   * The data object contain additional metadata about the module instance.
-   */
-  data: {
-    /**
-     * The classes which are added to the module dom wrapper.
-     */
-    classes: string;
-    /**
-     * The filename of the core module file.
-     */
-    file: string;
-    /**
-     * The path of the module folder.
-     */
-    path: string;
-    /**
-     * The header added to the module.
-     */
-    header: string;
-    /**
-     * The position in which the instance will be shown.
-     */
-    position: string;
-  };
 }
 
 export interface IClientModuleProperties {
   defaults?: object;
   requiresVersion?: string;
-  start?(this: IClientModuleProperties & IClientModuleInstance): void;
-  getHeader?(this: IClientModuleProperties & IClientModuleInstance): string;
-  getTemplate?(this: IClientModuleProperties & IClientModuleInstance): string;
-  getTemplateData?(this: IClientModuleProperties & IClientModuleInstance): object;
-  notificationReceived?(notification: string, payload: any, sender: object): void;
-  socketNotificationReceived?(notification: string, payload: any): void;
-  suspend?(this: IClientModuleProperties & IClientModuleInstance): void;
-  resume?(this: IClientModuleProperties & IClientModuleInstance): void;
-  getDom?(this: IClientModuleProperties & IClientModuleInstance): HTMLElement;
-  getStyles?(this: IClientModuleProperties & IClientModuleInstance): string[];
+  start?(this: IClientModuleInstanceProperties): void;
+  getHeader?(this: IClientModuleInstanceProperties): string;
+  getTemplate?(this: IClientModuleInstanceProperties): string;
+  getTemplateData?(this: IClientModuleInstanceProperties): object;
+  notificationReceived?(this: IClientModuleInstanceProperties, notification: string, payload: any, sender: object): void;
+  socketNotificationReceived?(this: IClientModuleInstanceProperties, notification: string, payload: any): void;
+  suspend?(this: IClientModuleInstanceProperties): void;
+  resume?(this: IClientModuleInstanceProperties): void;
+  getDom?(this: IClientModuleInstanceProperties): HTMLElement;
+  getStyles?(this: IClientModuleInstanceProperties): string[];
   [key: string]: any;
 }
 

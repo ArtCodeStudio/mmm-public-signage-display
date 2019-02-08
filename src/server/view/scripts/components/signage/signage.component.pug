@@ -1,10 +1,11 @@
 .row
   //- https://bootsnipp.com/snippets/7B7W
   ul.timeline.col-12
-    li(rv-each-time="timeline" rv-id="%time%" rv-class-timeline-inverted="%time% | uneven")
+    li(rv-each-time="timeline" rv-class-timeline-inverted="%time% | uneven")
         .timeline-badge.primary
           a
-            i.glyphicon.glyphicon-record {%time%}
+            //- {%time%}
+            i.fas.fa-dot-circle
         .timeline-panel(rv-if="time.type | eq 'modules'")
           .timeline-heading.px-3.py-2
             strong Modules
@@ -27,6 +28,7 @@
                       br
                       small(rv-text="mo.header")
               button.button-add-module.btn.btn-outline-secondary(type='button' rv-data-index="%time%" /*rv-on-click="addModuleToTimeline | args time time._module"*/) Add
+            button.button-show-timeline.btn.btn-outline-secondary(type='button' rv-on-click="showTimeline | args time") Show
         .timeline-panel(rv-if="time.type | eq 'media'")
           .timeline-heading
             img.img-fluid(src='http://lorempixel.com/1600/500/sports/2')

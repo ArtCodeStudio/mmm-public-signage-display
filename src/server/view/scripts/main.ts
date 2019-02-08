@@ -22,6 +22,12 @@ import { bs4Module } from '@ribajs/bs4';
 import * as CustomComponents from './components';
 // nimport { customBinders } from './binders';
 
+import { ConfigService } from './services/config.service';
+
+declare const vendor: {
+  [name: string]: string;
+};
+
 export class Main {
 
   protected view?: View;
@@ -34,6 +40,8 @@ export class Main {
   constructor() {
 
     this.debug('init the main application');
+
+    this.loadVendorFiles();
 
     // Regist custom components
     this.riba.module.regist({
@@ -56,6 +64,42 @@ export class Main {
       this.view = this.riba.bind(bindToElement, this.model);
     });
 
+  }
+
+  protected loadVendorFiles() {
+    ConfigService.get()
+    .then((config) => {
+      for (const name in vendor) {
+        if (vendor.hasOwnProperty(name)) {
+          const path = config.paths.vendor + '/' + vendor[name];
+          const extension = path.slice((Math.max(0, path.lastIndexOf('.')) || Infinity) + 1);
+          let append: HTMLScriptElement | HTMLLinkElement | null = null;
+          switch (extension.toLowerCase()) {
+            case 'js':
+              append = document.createElement('script');
+              append.type = 'text/javascript';
+              append.src = path;
+              document.getElementsByTagName('body')[0].appendChild(append);
+              break;
+            case 'css':
+              append = document.createElement('link');
+              append.rel = 'stylesheet';
+              append.type = 'text/css';
+              append.href = path;
+              document.getElementsByTagName('head')[0].appendChild(append);
+              break;
+          }
+          if (append) {
+            append.onload = () => {
+              this.debug('Loaded', path);
+            };
+            append.onerror = () => {
+              console.error('Error on loading:', path);
+            };
+          }
+        }
+      }
+    });
   }
 }
 

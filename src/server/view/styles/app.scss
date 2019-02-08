@@ -1,5 +1,11 @@
-// bootstrap
+
 @import 'charset';
+
+// fontawesome
+@import 'fontawesome-variables';
+@import '../node_modules/@fortawesome/fontawesome-free/scss/fontawesome';
+
+// bootstrap
 @import 'bootstrap-variables';
 @import 'app-variables';
 @import '../node_modules/bootstrap/scss/bootstrap';

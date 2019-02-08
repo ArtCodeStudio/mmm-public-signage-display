@@ -1,6 +1,10 @@
 import { IMMLog, IModuleRegister, IClientModuleInstance, IMagicMirrorHelper } from './interfaces';
 import { Manager } from 'socket.io-client';
 import { SocketService } from './client/socket.service';
+import { ModulesService } from './client/modules.service';
+
+let socketService: SocketService | null = null;
+let modulesService: ModulesService | null = null;
 
 declare const Module: IModuleRegister;
 declare const Log: IMMLog;
@@ -39,9 +43,10 @@ Module.register('mmm-public-signage-display', {
    * The start method is a perfect place to define any additional module properties.
    */
   start(): void {
-    Log.log(`[${this.name}] started`, MM);
+    Log.log(`[${this.name}] started`, MM, this);
 
-    const socketService = new SocketService(MM, Log, this);
+    socketService = new SocketService(MM, Log, this);
+    modulesService = new ModulesService(MM, Log, this);
     socketService.initNotificationForwarding();
   },
 
@@ -123,19 +128,23 @@ Module.register('mmm-public-signage-display', {
    * @param payload The payload of a notification.
    * @param sender he sender of the notification. If this argument is `undefined`, the sender of the notififiction is the core system.
    */
-  // notificationReceived(notification: string, payload: any, sender?: any): void {
-  //   Log.log(`[${this.name}] notificationReceived ${notification} from sender ${sender}`);
-  // },
+  notificationReceived(notification: string, payload: any, sender?: any): void {
+    Log.log(`[${this.name}] notificationReceived ${notification} from sender ${sender}`, payload);
+  },
 
   /**
    * When using a node_helper, the node helper can send your module notifications.
    * @param notification The notification identifier.
    * @param payload The payload of a notification.
    */
-  // socketNotificationReceived(notification: string, payload: any) {
-  //   Log.log(`[${this.name}] socketNotificationReceived ${notification}`);
-  //   this.sendNotification(notification, payload);
-  // },
+  socketNotificationReceived(notification: string, payload: any) {
+    Log.log(`[${this.name}] socketNotificationReceived ${notification}`, payload);
+    if (modulesService) {
+      if (notification === 'SHOW_MODULES') {
+        modulesService.setPositions(payload.modules);
+      }
+    }
+  },
 
   /**
    * When a module is hidden (using the module.hide() method), the suspend() method will be called.
